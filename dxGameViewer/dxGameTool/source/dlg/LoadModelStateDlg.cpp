@@ -52,7 +52,11 @@ BOOL LoadModelStateDlg::OnInitDialog()
 	//애니메이션 정보만 로드하는 경우
 	if (_isAniInfo) {
 		_checkFlipUV.SetCheck(FALSE);
+		_checkGenNormal.SetCheck(FALSE);
 		_checkFlipWind.SetCheck(FALSE);
+
+		_checkFlipUV.EnableWindow(FALSE);
+		_checkFlipWind.EnableWindow(FALSE);
 		_checkGenNormal.EnableWindow(FALSE);
 		_checkHierarchy.EnableWindow(FALSE);
 	}

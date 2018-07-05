@@ -547,8 +547,10 @@ void ModelDlg::OnBnClickedModeldlgAniplayBtn()
 {
 	auto idx = _lstAniList.GetNextItem(-1, LVNI_SELECTED);
 	
-	if (idx < 0)	return;
-
+	if (idx < 0) {
+		AfxMessageBox(L"Not Selected Animaiton!");
+		return;
+	}
 	_currentModel->PlayAni(idx);
 }
 
@@ -579,11 +581,10 @@ void ModelDlg::OnNMClickModeldlgAniListctrl(NMHDR *pNMHDR, LRESULT *pResult)
 	
 	auto idx = _lstAniList.GetNextItem(-1, LVNI_SELECTED);
 
-
-	if (idx < 0)
-		_checkAniRepeat.SetCheck(FALSE);
-	else
+	if (idx >= 0) {
 		_checkAniRepeat.SetCheck(_currentModel->GetAnimationList()[idx].IsRepeat());
+	}
+		
 	
 }
 
