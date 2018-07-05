@@ -101,8 +101,8 @@ void ModelLoader::ProcessNode(aiNode * aiNodeInfo, SkinModel* skModel, NodeInfo*
 
 void ModelLoader::ProcessMesh(aiMesh * mesh, Vertex& vertices, vector<unsigned long>& indices, vector<HierarchyMesh*>& meshList)
 {
-	unsigned int startIdx	= indices.size();
-	unsigned int startVert	= vertices.position.size();
+	UINT startIdx	= (UINT)indices.size();
+	UINT startVert	= (UINT)vertices.position.size();
 
 	XMFLOAT3 position, normal, bitangent, tangent;
 	//XMFLOAT4 color;
@@ -242,7 +242,7 @@ void ModelLoader::ProcessSkin(aiMesh * aiMesh, HierarchyMesh * mesh, Vertex& ver
 
 	//정점 정보를 묶어 레이아웃으로 넘기기 위해 가중치 정보와 본 인덱스 정보를 정점의 위치 갯수와 일치시킨다.
 	if (listBoneId.size() < vertices.position.size()) {
-		listBoneId.resize(vertices.position.size(), XMUINT4(0.f,0.f,0.f,0.f));
+		listBoneId.resize(vertices.position.size(), XMUINT4(0,0,0,0));
 		listWeight.resize(vertices.position.size(), XMFLOAT4(0.f, 0.f, 0.f, 0.f));
 	}
 	
@@ -294,8 +294,8 @@ void ModelLoader::ProcessAnimation(const aiScene * pScene, SkinModel* skModel)
 		
 		float lastTime = 0.f;
 		Animation aniInfo;
-		aniInfo.SetDuration(aiAni->mDuration);
-		aniInfo.SetTickPerSecond(aiAni->mTicksPerSecond);
+		aniInfo.SetDuration((float)aiAni->mDuration);
+		aniInfo.SetTickPerSecond((float)aiAni->mTicksPerSecond);
 
 		CString aniName = (CString)aiAni->mName.C_Str();
 		aniName = aniName.TrimLeft();
@@ -325,19 +325,19 @@ void ModelLoader::ProcessAnimation(const aiScene * pScene, SkinModel* skModel)
 				if (aiAniNode->mNumPositionKeys > k) {
 					auto posKey = aiAniNode->mPositionKeys[k];
 					memcpy_s(&translation, sizeof(translation), &posKey.mValue, sizeof(posKey.mValue));
-					time = aiAniNode->mPositionKeys[k].mTime;
+					time = (float)aiAniNode->mPositionKeys[k].mTime;
 				}
 
 				if (aiAniNode->mNumRotationKeys > k) {
 					auto rotKey = aiAniNode->mRotationKeys[k];
 					rotation = XMFLOAT4(rotKey.mValue.x, rotKey.mValue.y, rotKey.mValue.z, rotKey.mValue.w);
-					time = aiAniNode->mRotationKeys[k].mTime;
+					time = (float)aiAniNode->mRotationKeys[k].mTime;
 				}
 
 				if (aiAniNode->mNumScalingKeys > k) {
 					auto scaleKey = aiAniNode->mScalingKeys[k];
 					memcpy_s(&scale, sizeof(scale), &scaleKey.mValue, sizeof(scaleKey.mValue));
-					time = aiAniNode->mScalingKeys[k].mTime;
+					time = (float)aiAniNode->mScalingKeys[k].mTime;
 				}
 
 				aniNodeInfo.keyFrame.emplace_back(KeyFrame{ time, translation, rotation, scale });

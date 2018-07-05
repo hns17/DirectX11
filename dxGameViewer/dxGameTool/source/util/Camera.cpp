@@ -139,7 +139,7 @@ void Camera::DeviceInput(float duration)
 //마우스 이동, 내용 동일
 void Camera::MouseInput(float duration)
 {
-	POINT screenCenter{	WINSIZEX * 0.5f, WINSIZEY * 0.5f };
+	POINT screenCenter{	(LONG)(WINSIZEX * 0.5f), (LONG)(WINSIZEY * 0.5f) };
 
 	if (KEYMANAGER.IsOnceKeyDown(VK_RBUTTON)) {
 		MYUTIL::setMousePos(screenCenter.x, screenCenter.y);
@@ -147,8 +147,8 @@ void Camera::MouseInput(float duration)
 	else if(KEYMANAGER.IsStayKeyDown(VK_RBUTTON)) {
 		POINT mousePos = MYUTIL::getMousePos();
 
-		float Hori = mousePos.x - screenCenter.x;
-		float Vert = mousePos.y - screenCenter.y;
+		float Hori = (float)(mousePos.x - screenCenter.x);
+		float Vert = (float)(mousePos.y - screenCenter.y);
 		
 		_rotation.x += Vert * duration * _mouseSpeed;
 		_rotation.y += Hori * duration * _mouseSpeed;

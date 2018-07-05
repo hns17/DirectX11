@@ -256,7 +256,7 @@ void TextureDlg::OnDeleteDeletetexture()
 		
 		if (model == NULL) continue;
 		
-		for (auto mData : model->GetMaterialList()) {
+		for (auto& mData : model->GetMaterialList()) {
 			if (tex == mData.diffuseMap) {
 				mData.diffuseMap = NULL;
 			}
@@ -326,8 +326,8 @@ void TextureDlg::UpdateObjInfo()
 	if (_currentMesh->matIdx == -1) {	return;		}
 
 	_cmbDiffuseMap.EnableWindow(true);
-	_cmbAlphaMap.EnableWindow(true);
-	_cmbBumpMap.EnableWindow(true);
+	/*_cmbAlphaMap.EnableWindow(true);
+	_cmbBumpMap.EnableWindow(true);*/
 
 	_cmbDiffuseMap.AddString(L"None");
 	_cmbAlphaMap.AddString(L"None");

@@ -19,6 +19,8 @@ void SimpleTextureModel::Render(ID3D11DeviceContext *dc)
 
 	BasicModel::Render(dc);
 
+	ID3D11ShaderResourceView* nullViews[] = { nullptr };
+	dc->PSSetShaderResources(0, 1, nullViews);
 }
 
 void SimpleTextureModel::SetTexture(ID3D11ShaderResourceView * texture)

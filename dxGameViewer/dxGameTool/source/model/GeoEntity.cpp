@@ -256,7 +256,6 @@ BaseModel* GeoEntity::CreateGridLine(ID3D11Device* device, float radius, BaseMod
 		vertices.color.emplace_back((XMFLOAT4(1.f, 1.f, 1.f, 1.f)));
 	}
 
-	UINT vertCnt = vertices.position.size();
 
 	BaseModel* pModel = model;
 
@@ -279,9 +278,7 @@ BaseModel* GeoEntity::CreateIcoHedronSphere(ID3D11Device* device,  int Lod, Base
 	vector<unsigned long>	indices;
 	
 	GenerateVertexSphere(vertices, indices, Lod);
-
-	UINT idxCnt = indices.size();
-	
+		
 	BaseModel* pModel = model;
 	
 	if (!pModel) {
@@ -304,8 +301,6 @@ BaseModel * GeoEntity::CreateCapsule(ID3D11Device * device, XMFLOAT4 color, Base
 
 	GenerateVertexCapsule(vertices, indices, color);
 
-	UINT indexCnt = indices.size();
-	
 
 	BaseModel* pModel = model;
 	if (!pModel) {
@@ -329,7 +324,7 @@ BaseModel * GeoEntity::CreateCapsule(ID3D11Device * device, XMFLOAT4 color, Base
 
 void GeoEntity::GenerateVertexCube(Vertex & vertices, vector<unsigned long>& indices, XMFLOAT3 center, XMFLOAT3 size, XMFLOAT4 color)
 {
-	UINT offset = vertices.position.size();
+	UINT offset = (UINT)vertices.position.size();
 
 	XMFLOAT3 radius = XMFLOAT3(size.x * 0.5f, size.y * 0.5f, size.z * 0.5f);
 
@@ -377,7 +372,7 @@ void GeoEntity::GenerateVertexCube(Vertex & vertices, vector<unsigned long>& ind
 
 void GeoEntity::GenerateVertexCone(Vertex & vertices, vector<unsigned long>& indices, XMFLOAT3 center, XMFLOAT3 degree, XMFLOAT3 size, XMFLOAT4 color)
 {
-	UINT offset = vertices.position.size();
+	UINT offset = (UINT)vertices.position.size();
 
 	vertices.position.emplace_back(XMFLOAT3(-1.f, 0.f, 1.f));
 	vertices.position.emplace_back(XMFLOAT3(1.f, 0.f, 1.f));
@@ -397,7 +392,7 @@ void GeoEntity::GenerateVertexCone(Vertex & vertices, vector<unsigned long>& ind
 	//¿Ãµø
 	tm = XMMatrixMultiply(tm, XMMatrixTranslation(center.x, center.y, center.z));
 
-	for (int i = offset; i < offset + 5; i++) {
+	for (UINT i = offset; i < offset + 5; i++) {
 		XMVECTOR vert = XMLoadFloat3(&vertices.position[i]);
 		vert = XMVector3Transform(vert, tm);
 
@@ -423,7 +418,7 @@ void GeoEntity::GenerateVertexCone(Vertex & vertices, vector<unsigned long>& ind
 void GeoEntity::GenerateVertexCircle(Vertex & vertices, XMFLOAT4 & color, XMFLOAT3 degree)
 {
 	int segment = 36;
-	float intervalAngle = (3.141592 * 2.0f) / (float)segment;
+	float intervalAngle = (3.141592f * 2.0f) / (float)segment;
 
 	vertices.position.reserve(segment);
 	vertices.color.reserve(segment);
@@ -445,11 +440,11 @@ void GeoEntity::GenerateVertexCircle(Vertex & vertices, XMFLOAT4 & color, XMFLOA
 
 void GeoEntity::GenerateVertexCapsule(Vertex & vertices, vector<unsigned long>& indices, XMFLOAT4 color)
 {
-	int N = 32; // Mesh resolution
+	UINT N = 32; // Mesh resolution
 	float radius = 1;
 	float height = 2;
 
-	int index = 0;
+	UINT index = 0;
 	float theta, phi;
 	
 	unsigned int size = (N + 1)*(N / 2 + 2);
@@ -496,11 +491,11 @@ void GeoEntity::GenerateVertexCapsule(Vertex & vertices, vector<unsigned long>& 
 		vertices.uv[i].x = atan2(vertices.position[i].y, vertices.position[i].x) / XM_2PI;
 		if (vertices.uv[i].x < 0)
 			vertices.uv[i].x = 1 + vertices.uv[i].x;
-		vertices.uv[i].y = 0.5 + atan2(vertices.position[i].z, sqrt(vertices.position[i].x*vertices.position[i].x + vertices.position[i].y*vertices.position[i].y)) / XM_PI;
+		vertices.uv[i].y = 0.5f + atan2(vertices.position[i].z, sqrt(vertices.position[i].x*vertices.position[i].x + vertices.position[i].y*vertices.position[i].y)) / XM_PI;
 	}
 
 	for (UINT j = 0; j <= N / 2; j++) {
-		for (UINT i = 0; i<N; i++) {
+		for (UINT i = 0; i< N; i++) {
 			int i1 = j * (N + 1) + i + 1;
 			int i2 = j * (N + 1) + (i + 1) + 1;
 			int i3 = (j + 1) * (N + 1) + (i + 1) + 1;

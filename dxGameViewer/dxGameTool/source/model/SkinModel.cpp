@@ -65,7 +65,7 @@ void SkinModel::Render(ID3D11DeviceContext * dc)
 		}
 
 		RM_SHADER.SetShaderParameters(dc, _tmModel);
-
+		
 		//마테리얼 셋팅
 		if (matIdx > -1) {
 			auto texData = _materialList[matIdx].diffuseMap;
@@ -73,13 +73,12 @@ void SkinModel::Render(ID3D11DeviceContext * dc)
 			if (texData)
 				dc->PSSetShaderResources(0, 1, &texData->data);
 		}
-		else {
-			dc->PSSetShaderResources(0, 1, NULL);
-		}
 
 		//렌더
 		GetShader()->IndexRender(dc, meshData->count, meshData->start);
 	}
+	ID3D11ShaderResourceView* nullViews[] = { nullptr };
+	dc->PSSetShaderResources(0, 1, nullViews);
 }
 
 void SkinModel::InsertMaterial(Material& newMat)
