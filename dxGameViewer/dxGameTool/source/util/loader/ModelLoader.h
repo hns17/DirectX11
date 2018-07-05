@@ -2,7 +2,7 @@
 //		## ModelLoader ## (assimp 라이브러리를 이용해 모델 정보를 로드한다.)
 //==================================================================
 
-
+#pragma once
 #include <assimp\Importer.hpp>
 #include <assimp\scene.h>
 #include <assimp\postprocess.h>

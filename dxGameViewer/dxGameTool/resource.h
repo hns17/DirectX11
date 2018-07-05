@@ -31,8 +31,6 @@
 #define IDR_TEXDLG_TEXLIST_POPUP        329
 #define IDD_DIALOG2                     330
 #define IDD_DLG_LOADMODEL_STATE         330
-#define IDD_DIALOG3                     334
-#define IDC_LIST1                       1004
 #define IDC_MODELDLG_MODEL_LISTCTRL     1004
 #define IDC_BUTTON1                     1006
 #define IDC_MODELDLG_POSX_UPBTN         1006
@@ -168,10 +166,7 @@
 #define IDC_CHECK5                      1076
 #define IDC_LMS_GENNORMAL_CHECK         1076
 #define IDC_LMS_IDOK                    1077
-#define IDC_LIST2                       1079
 #define IDC_SPIN1                       1080
-#define IDC_MFCPROPERTYGRID2            1087
-#define IDC_MFCPROPERTYGRID3            1088
 #define IDC_MODELDLG_ANI_LISTCTRL       1090
 #define IDC_TEX_IMGFRAME_GROUP          1091
 #define ID_INSERT_INSERTMODEL           32771
