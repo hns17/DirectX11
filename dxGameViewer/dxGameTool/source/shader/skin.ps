@@ -1,0 +1,36 @@
+////////////////////////////////////////////////////////////////////////////////
+// Filename: skin.ps
+////////////////////////////////////////////////////////////////////////////////
+
+Texture2D shaderTexture;
+SamplerState SampleType;
+
+
+struct PixelInputType
+{
+	float4 position : SV_POSITION;
+	float2 tex : TEXCOORD0;
+};
+
+////////////////////////////////////////////////////////////////////////////////
+// Pixel Shader
+////////////////////////////////////////////////////////////////////////////////
+float4 psMain(PixelInputType input) : SV_TARGET
+{
+	float4 textureColor;
+
+
+    // Sample the pixel color from the texture using the sampler at this texture coordinate location.
+    textureColor = shaderTexture.Sample(SampleType, input.tex);
+
+//	if(textureColor.r == 0.f) {
+	//	clip(-1);
+	//}
+	
+	//textureColor.r *= textureColor.a;
+	//textureColor.g *= textureColor.a;
+	//textureColor.b *= textureColor.a;
+
+	
+    return textureColor;
+}

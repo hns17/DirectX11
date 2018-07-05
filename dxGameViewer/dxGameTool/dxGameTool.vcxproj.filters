@@ -1,0 +1,337 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <Filter Include="리소스 파일">
+      <UniqueIdentifier>{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}</UniqueIdentifier>
+      <Extensions>rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav;mfcribbon-ms</Extensions>
+    </Filter>
+    <Filter Include="WndFrame">
+      <UniqueIdentifier>{1c0b76f9-9956-4c86-a769-6667e1bffac0}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="GameFrameWork">
+      <UniqueIdentifier>{4ab2fca1-2c3d-4ece-9956-ae9b2943eeb7}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="GameFrameWork\Manager">
+      <UniqueIdentifier>{6eff2fda-ee2c-4f10-8573-85a4a207cf5b}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Scene">
+      <UniqueIdentifier>{1f18a767-2d78-4705-a399-bef4b8110145}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="GameFrameWork\Util">
+      <UniqueIdentifier>{94312da4-7e41-498a-a3ff-5a4410a90644}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="GameFrameWork\Shader">
+      <UniqueIdentifier>{6c1dc464-8395-4055-9f03-768f654d7740}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="GameFrameWork\Model">
+      <UniqueIdentifier>{5084911e-775e-4549-bdfe-a7c292828503}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Dialog">
+      <UniqueIdentifier>{7e33dbd4-beab-42e9-8df9-b0f8c5310681}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="GameFrameWork\Manager\Device">
+      <UniqueIdentifier>{01e9e7dd-ba8e-4c56-8ef5-a53d95d164b2}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="GameFrameWork\Manager\Key">
+      <UniqueIdentifier>{068f82b1-558f-4b4e-b47c-d98b4ab53297}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="GameFrameWork\Manager\Scene">
+      <UniqueIdentifier>{53c7c70c-7182-4b79-be35-bedd5da73ca0}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="GameFrameWork\Manager\Time">
+      <UniqueIdentifier>{ce7c84dc-5bf8-4f60-93a5-bb97b129450d}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="GameFrameWork\Manager\Resource">
+      <UniqueIdentifier>{b76001be-940c-4507-8287-ad5966cb04ab}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Dialog\CustomControl">
+      <UniqueIdentifier>{45a43765-ebcd-400a-8030-d2620140fe03}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="GameFrameWork\Manager\Font">
+      <UniqueIdentifier>{bf2daa92-ca82-4382-a0c0-06573cf11e44}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="GameFrameWork\Util\TinyXml">
+      <UniqueIdentifier>{121b56c8-964c-4d28-9813-56c4f2af7903}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="GameFrameWork\Shader\hlsl">
+      <UniqueIdentifier>{a2906e55-3449-4e29-bd25-7d07c2be0752}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="GameFrameWork\Model\Type">
+      <UniqueIdentifier>{e2f5e4d4-58e9-4ecf-a308-1601806db494}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="GameFrameWork\Model\Geometry">
+      <UniqueIdentifier>{ea248029-c202-4ffa-b23d-a1b4fa02f495}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="GameFrameWork\Model\Type\System">
+      <UniqueIdentifier>{1398dfe1-fde1-43b5-a176-28d0bd1d4645}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="GameFrameWork\Model\Type\Res">
+      <UniqueIdentifier>{52d52163-6237-40fe-97d6-05bfe32816dd}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="dxGameTool.h">
+      <Filter>WndFrame</Filter>
+    </ClInclude>
+    <ClInclude Include="MainFrm.h">
+      <Filter>WndFrame</Filter>
+    </ClInclude>
+    <ClInclude Include="Resource.h">
+      <Filter>WndFrame</Filter>
+    </ClInclude>
+    <ClInclude Include="stdafx.h">
+      <Filter>WndFrame</Filter>
+    </ClInclude>
+    <ClInclude Include="targetver.h">
+      <Filter>WndFrame</Filter>
+    </ClInclude>
+    <ClInclude Include="include\tinyxml\tinystr.h">
+      <Filter>GameFrameWork\Util\TinyXml</Filter>
+    </ClInclude>
+    <ClInclude Include="include\tinyxml\tinyxml.h">
+      <Filter>GameFrameWork\Util\TinyXml</Filter>
+    </ClInclude>
+    <ClInclude Include="source\scene\GameNode.h">
+      <Filter>Scene</Filter>
+    </ClInclude>
+    <ClInclude Include="source\scene\MainGame.h">
+      <Filter>Scene</Filter>
+    </ClInclude>
+    <ClInclude Include="source\scene\TestScene.h">
+      <Filter>Scene</Filter>
+    </ClInclude>
+    <ClInclude Include="source\dlg\LoadModelStateDlg.h">
+      <Filter>Dialog</Filter>
+    </ClInclude>
+    <ClInclude Include="source\dlg\ModelDlg.h">
+      <Filter>Dialog</Filter>
+    </ClInclude>
+    <ClInclude Include="source\dlg\RenderStateDlg.h">
+      <Filter>Dialog</Filter>
+    </ClInclude>
+    <ClInclude Include="source\dlg\TextureDlg.h">
+      <Filter>Dialog</Filter>
+    </ClInclude>
+    <ClInclude Include="source\dlg\CustomTreeCtrl.h">
+      <Filter>Dialog\CustomControl</Filter>
+    </ClInclude>
+    <ClInclude Include="source\util\loader\ModelLoader.h">
+      <Filter>GameFrameWork\Util</Filter>
+    </ClInclude>
+    <ClInclude Include="source\shader\bufferStruct.h">
+      <Filter>GameFrameWork\Shader</Filter>
+    </ClInclude>
+    <ClInclude Include="source\shader\Shader.h">
+      <Filter>GameFrameWork\Shader</Filter>
+    </ClInclude>
+    <ClInclude Include="source\manager\GameFont.h">
+      <Filter>GameFrameWork\Manager\Font</Filter>
+    </ClInclude>
+    <ClInclude Include="source\manager\RMModel.h">
+      <Filter>GameFrameWork\Manager\Resource</Filter>
+    </ClInclude>
+    <ClInclude Include="source\manager\RMShader.h">
+      <Filter>GameFrameWork\Manager\Resource</Filter>
+    </ClInclude>
+    <ClInclude Include="source\manager\RMTexture.h">
+      <Filter>GameFrameWork\Manager\Resource</Filter>
+    </ClInclude>
+    <ClInclude Include="source\util\MYUTIL.h">
+      <Filter>GameFrameWork\Util</Filter>
+    </ClInclude>
+    <ClInclude Include="source\util\Camera.h">
+      <Filter>GameFrameWork\Util</Filter>
+    </ClInclude>
+    <ClInclude Include="source\model\BaseModel.h">
+      <Filter>GameFrameWork\Model</Filter>
+    </ClInclude>
+    <ClInclude Include="source\model\ModelStructure.h">
+      <Filter>GameFrameWork\Model</Filter>
+    </ClInclude>
+    <ClInclude Include="source\model\GeoEntity.h">
+      <Filter>GameFrameWork\Model\Geometry</Filter>
+    </ClInclude>
+    <ClInclude Include="source\model\icosphereGenerator.h">
+      <Filter>GameFrameWork\Model\Geometry</Filter>
+    </ClInclude>
+    <ClInclude Include="source\model\SimpleTextureModel.h">
+      <Filter>GameFrameWork\Model\Type\System</Filter>
+    </ClInclude>
+    <ClInclude Include="source\model\Animation.h">
+      <Filter>GameFrameWork\Model\Type\Res</Filter>
+    </ClInclude>
+    <ClInclude Include="source\model\SkinModel.h">
+      <Filter>GameFrameWork\Model\Type\Res</Filter>
+    </ClInclude>
+    <ClInclude Include="source\manager\DeviceManager.h">
+      <Filter>GameFrameWork\Manager\Device</Filter>
+    </ClInclude>
+    <ClInclude Include="source\manager\KeyManager.h">
+      <Filter>GameFrameWork\Manager\Key</Filter>
+    </ClInclude>
+    <ClInclude Include="source\manager\ResourceManager.h">
+      <Filter>GameFrameWork\Manager\Resource</Filter>
+    </ClInclude>
+    <ClInclude Include="source\manager\SceneManager.h">
+      <Filter>GameFrameWork\Manager\Scene</Filter>
+    </ClInclude>
+    <ClInclude Include="source\manager\TimeManager.h">
+      <Filter>GameFrameWork\Manager\Time</Filter>
+    </ClInclude>
+    <ClInclude Include="source\manager\SingletonBase.h">
+      <Filter>GameFrameWork\Manager</Filter>
+    </ClInclude>
+    <ClInclude Include="source\model\BasicModel.h">
+      <Filter>GameFrameWork\Model\Type\System</Filter>
+    </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="dxGameTool.cpp">
+      <Filter>WndFrame</Filter>
+    </ClCompile>
+    <ClCompile Include="MainFrm.cpp">
+      <Filter>WndFrame</Filter>
+    </ClCompile>
+    <ClCompile Include="stdafx.cpp">
+      <Filter>WndFrame</Filter>
+    </ClCompile>
+    <ClCompile Include="include\tinyxml\tinystr.cpp">
+      <Filter>GameFrameWork\Util\TinyXml</Filter>
+    </ClCompile>
+    <ClCompile Include="include\tinyxml\tinyxml.cpp">
+      <Filter>GameFrameWork\Util\TinyXml</Filter>
+    </ClCompile>
+    <ClCompile Include="include\tinyxml\tinyxmlerror.cpp">
+      <Filter>GameFrameWork\Util\TinyXml</Filter>
+    </ClCompile>
+    <ClCompile Include="include\tinyxml\tinyxmlparser.cpp">
+      <Filter>GameFrameWork\Util\TinyXml</Filter>
+    </ClCompile>
+    <ClCompile Include="source\scene\MainGame.cpp">
+      <Filter>Scene</Filter>
+    </ClCompile>
+    <ClCompile Include="source\scene\TestScene.cpp">
+      <Filter>Scene</Filter>
+    </ClCompile>
+    <ClCompile Include="source\dlg\LoadModelStateDlg.cpp">
+      <Filter>Dialog</Filter>
+    </ClCompile>
+    <ClCompile Include="source\dlg\ModelDlg.cpp">
+      <Filter>Dialog</Filter>
+    </ClCompile>
+    <ClCompile Include="source\dlg\RenderStateDlg.cpp">
+      <Filter>Dialog</Filter>
+    </ClCompile>
+    <ClCompile Include="source\dlg\TextureDlg.cpp">
+      <Filter>Dialog</Filter>
+    </ClCompile>
+    <ClCompile Include="source\dlg\CustomTreeCtrl.cpp">
+      <Filter>Dialog\CustomControl</Filter>
+    </ClCompile>
+    <ClCompile Include="source\util\loader\ModelLoader.cpp">
+      <Filter>GameFrameWork\Util</Filter>
+    </ClCompile>
+    <ClCompile Include="source\shader\Shader.cpp">
+      <Filter>GameFrameWork\Shader</Filter>
+    </ClCompile>
+    <ClCompile Include="source\manager\GameFont.cpp">
+      <Filter>GameFrameWork\Manager\Font</Filter>
+    </ClCompile>
+    <ClCompile Include="source\manager\RMModel.cpp">
+      <Filter>GameFrameWork\Manager\Resource</Filter>
+    </ClCompile>
+    <ClCompile Include="source\manager\RMShader.cpp">
+      <Filter>GameFrameWork\Manager\Resource</Filter>
+    </ClCompile>
+    <ClCompile Include="source\manager\RMTexture.cpp">
+      <Filter>GameFrameWork\Manager\Resource</Filter>
+    </ClCompile>
+    <ClCompile Include="source\util\MYUTIL.cpp">
+      <Filter>GameFrameWork\Util</Filter>
+    </ClCompile>
+    <ClCompile Include="source\util\Camera.cpp">
+      <Filter>GameFrameWork\Util</Filter>
+    </ClCompile>
+    <ClCompile Include="source\model\BaseModel.cpp">
+      <Filter>GameFrameWork\Model</Filter>
+    </ClCompile>
+    <ClCompile Include="source\model\GeoEntity.cpp">
+      <Filter>GameFrameWork\Model\Geometry</Filter>
+    </ClCompile>
+    <ClCompile Include="source\model\icosphereGenerator.cpp">
+      <Filter>GameFrameWork\Model\Geometry</Filter>
+    </ClCompile>
+    <ClCompile Include="source\model\SimpleTextureModel.cpp">
+      <Filter>GameFrameWork\Model\Type\System</Filter>
+    </ClCompile>
+    <ClCompile Include="source\model\Animation.cpp">
+      <Filter>GameFrameWork\Model\Type\Res</Filter>
+    </ClCompile>
+    <ClCompile Include="source\model\SkinModel.cpp">
+      <Filter>GameFrameWork\Model\Type\Res</Filter>
+    </ClCompile>
+    <ClCompile Include="source\manager\DeviceManager.cpp">
+      <Filter>GameFrameWork\Manager\Device</Filter>
+    </ClCompile>
+    <ClCompile Include="source\manager\KeyManager.cpp">
+      <Filter>GameFrameWork\Manager\Key</Filter>
+    </ClCompile>
+    <ClCompile Include="source\manager\SceneManager.cpp">
+      <Filter>GameFrameWork\Manager\Scene</Filter>
+    </ClCompile>
+    <ClCompile Include="source\manager\TimeManager.cpp">
+      <Filter>GameFrameWork\Manager\Time</Filter>
+    </ClCompile>
+    <ClCompile Include="source\model\BasicModel.cpp">
+      <Filter>GameFrameWork\Model\Type\System</Filter>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <ResourceCompile Include="dxGameTool.rc">
+      <Filter>리소스 파일</Filter>
+    </ResourceCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <Image Include="res\userimages.bmp">
+      <Filter>리소스 파일</Filter>
+    </Image>
+    <Image Include="res\dxGameTool.ico">
+      <Filter>리소스 파일</Filter>
+    </Image>
+    <Image Include="res\Toolbar.bmp">
+      <Filter>리소스 파일</Filter>
+    </Image>
+    <Image Include="res\Toolbar256.bmp">
+      <Filter>리소스 파일</Filter>
+    </Image>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="res\dxGameTool.rc2">
+      <Filter>리소스 파일</Filter>
+    </None>
+    <None Include="source\shader\basic.ps">
+      <Filter>GameFrameWork\Shader\hlsl</Filter>
+    </None>
+    <None Include="source\shader\font.ps">
+      <Filter>GameFrameWork\Shader\hlsl</Filter>
+    </None>
+    <None Include="source\shader\skin.ps">
+      <Filter>GameFrameWork\Shader\hlsl</Filter>
+    </None>
+    <None Include="source\shader\texture.ps">
+      <Filter>GameFrameWork\Shader\hlsl</Filter>
+    </None>
+    <None Include="source\shader\basic.vs">
+      <Filter>GameFrameWork\Shader\hlsl</Filter>
+    </None>
+    <None Include="source\shader\font.vs">
+      <Filter>GameFrameWork\Shader\hlsl</Filter>
+    </None>
+    <None Include="source\shader\skin.vs">
+      <Filter>GameFrameWork\Shader\hlsl</Filter>
+    </None>
+    <None Include="source\shader\texture.vs">
+      <Filter>GameFrameWork\Shader\hlsl</Filter>
+    </None>
+  </ItemGroup>
+</Project>
