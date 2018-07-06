@@ -469,6 +469,7 @@ void ModelDlg::OnDeltaposModeldlgSizezSpin(NMHDR *pNMHDR, LRESULT *pResult)
 void ModelDlg::OnLoadModel()
 {
 	CFileDialog fileDlg(TRUE); // 파일열기
+	
 
 	if (fileDlg.DoModal() != IDOK) {
 		return;
