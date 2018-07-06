@@ -6,6 +6,7 @@
 #include "BaseModel.h"
 #include "Animation.h"
 
+
 class SkinModel : public BaseModel
 {
 public:
@@ -15,14 +16,17 @@ public:
 	void					Release();
 	void					Render(ID3D11DeviceContext* dc);
 	
-	void					InsertMaterial(Material& newMat);
-
+	//Animation Function
 	void					PlayAni(int idx);
-
 	void					StopAni()			{	_aniList[_playAniIdx].Stop();	}
 	void					PauseAni()			{	_aniList[_playAniIdx].Pause();	}
 
 
+	//마테리얼 단위 메쉬정보 업데이트
+	void					UpdateMeshByMaterial();
+
+
+	//Get Function
 	vector<HierarchyMesh*>&	GetMeshList()		{	return _meshList;				}
 	vector<NodeInfo*>&		GetNodeList()		{	return _nodeList;				}
 
@@ -33,14 +37,15 @@ protected:
 	void UpdateNodeTM();
 
 protected:
-	vector<Material>		_materialList;
-	vector<NodeInfo*>		_nodeList;
-	vector<Animation>		_aniList;
-	vector<HierarchyMesh*>	_meshList;
-
 	Shader*					_texShader		= NULL;
 	Shader*					_skinShader		= NULL;
 	int						_playAniIdx		= -1;
 
+	vector<Material>		_materialList;
+	vector<Animation>		_aniList;
+	vector<NodeInfo*>		_nodeList;
+	vector<HierarchyMesh*>	_meshList;
 
+	//마테리얼 단위 렌더링을 위한 변수, 편의상 메쉬 정보와 분리 해 둠.
+	vector<vector<HierarchyMesh*>> _meshByMaterial;
 };

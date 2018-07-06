@@ -68,6 +68,6 @@ private:
 	float				_playTime		= 0.f;							//현재 프레임
 	float				_lastTime		= 0.f;							//마지막 프레임
 
-	bool				_isRepeat		= false;						//재생 완료시 반복 재생 플래스
+	bool				_isRepeat		= true;							//재생 완료시 반복 재생 플래스
 	PLAY_STATE			_playState		= PLAY_STATE::STOP;				//재생 상태
 };

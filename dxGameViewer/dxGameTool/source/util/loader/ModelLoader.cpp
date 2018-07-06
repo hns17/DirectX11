@@ -57,6 +57,9 @@ SkinModel* ModelLoader::LoadModel(CString path, UINT flag)
 		return NULL;
 	}
 
+	//마테리얼 단위로 메쉬 정보 업데이트
+	model->UpdateMeshByMaterial();
+
 	return model;
 }
 
@@ -179,31 +182,6 @@ void ModelLoader::ProcessMaterial(const aiScene * pScene, vector<Material>& matL
 			float opacity = 0.0f;
 			float shininess = 0.0f;
 
-			// set diffuse color.
-			//pScene->mMaterials[i]->Get(AI_MATKEY_COLOR_DIFFUSE, color);
-			//newMat->setDiffuseColour(glm::vec3(color[0], color[1], color[2]));
-
-			//// set ambient color.
-			//pScene->mMaterials[i]->Get(AI_MATKEY_COLOR_AMBIENT, ambient);
-			//newMat->setAmbientColour(glm::vec3(ambient[0], ambient[2], ambient[3]));
-
-			//// set specular color.
-			//pScene->mMaterials[i]->Get(AI_MATKEY_COLOR_SPECULAR, specular);
-			//newMat->setSpecularColour(glm::vec3(specular[0], specular[1], specular[2]));
-
-			//// set transparency of materials.
-			//pScene->mMaterials[i]->Get(AI_MATKEY_COLOR_TRANSPARENT, transparent);
-			//newMat->setTransparentColour(glm::vec3(transparent[0], transparent[1], transparent[2]));
-
-			//// set shininess.
-			//pScene->mMaterials[i]->Get(AI_MATKEY_SHININESS, shininess);
-			//newMat->setShininess(shininess);
-
-			//// set opacity of material
-			//pScene->mMaterials[i]->Get(AI_MATKEY_OPACITY, opacity);
-			//newMat->setOpacity(opacity);
-
-
 			aiString  texture_path[3];
 			pScene->mMaterials[i]->GetTexture(aiTextureType_DIFFUSE, 0, &texture_path[0], NULL, NULL, NULL, NULL, NULL);
 			wstring texPath = directoryPath + MYUTIL::getFileName((CString)texture_path[0].C_Str());
@@ -217,18 +195,45 @@ void ModelLoader::ProcessMaterial(const aiScene * pScene, vector<Material>& matL
 			texPath = directoryPath + MYUTIL::getFileName((CString)texture_path[2].C_Str());
 			newMat.normalMap = RM_TEXTURE.AddResource(texPath);
 
-			/*		pScene->mMaterials[i]->GetTexture(aiTextureType_NORMALS, 0, &texture_path[2], NULL, NULL, NULL, NULL, NULL);
-			pScene->mMaterials[i]->GetTexture(aiTextureType_NONE, 0, &texture_path[2], NULL, NULL, NULL, NULL, NULL);
-			pScene->mMaterials[i]->GetTexture(aiTextureType_UNKNOWN, 0, &texture_path[2], NULL, NULL, NULL, NULL, NULL);
-			pScene->mMaterials[i]->GetTexture(aiTextureType_AMBIENT, 0, &texture_path[2], NULL, NULL, NULL, NULL, NULL);
-			pScene->mMaterials[i]->GetTexture(aiTextureType_DISPLACEMENT, 0, &texture_path[2], NULL, NULL, NULL, NULL, NULL);
-			pScene->mMaterials[i]->GetTexture(aiTextureType_EMISSIVE, 0, &texture_path[2], NULL, NULL, NULL, NULL, NULL);
-			pScene->mMaterials[i]->GetTexture(aiTextureType_HEIGHT, 0, &texture_path[2], NULL, NULL, NULL, NULL, NULL);
-			pScene->mMaterials[i]->GetTexture(aiTextureType_LIGHTMAP, 0, &texture_path[2], NULL, NULL, NULL, NULL, NULL);
-			pScene->mMaterials[i]->GetTexture(aiTextureType_REFLECTION, 0, &texture_path[2], NULL, NULL, NULL, NULL, NULL);
-			pScene->mMaterials[i]->GetTexture(aiTextureType_SHININESS, 0, &texture_path[2], NULL, NULL, NULL, NULL, NULL);
-			pScene->mMaterials[i]->GetTexture(aiTextureType_SPECULAR, 0, &texture_path[2], NULL, NULL, NULL, NULL, NULL);
-			pScene->mMaterials[i]->GetTexture(aiTextureType_UNKNOWN, 0, &texture_path[2], NULL, NULL, NULL, NULL, NULL);*/
+			//assimp 제공되는 정보 확인을 위해 나열 해 놓음
+			{
+				// set diffuse color.
+				//pScene->mMaterials[i]->Get(AI_MATKEY_COLOR_DIFFUSE, color);
+				//newMat->setDiffuseColour(glm::vec3(color[0], color[1], color[2]));
+
+				//// set ambient color.
+				//pScene->mMaterials[i]->Get(AI_MATKEY_COLOR_AMBIENT, ambient);
+				//newMat->setAmbientColour(glm::vec3(ambient[0], ambient[2], ambient[3]));
+
+				//// set specular color.
+				//pScene->mMaterials[i]->Get(AI_MATKEY_COLOR_SPECULAR, specular);
+				//newMat->setSpecularColour(glm::vec3(specular[0], specular[1], specular[2]));
+
+				//// set transparency of materials.
+				//pScene->mMaterials[i]->Get(AI_MATKEY_COLOR_TRANSPARENT, transparent);
+				//newMat->setTransparentColour(glm::vec3(transparent[0], transparent[1], transparent[2]));
+
+				//// set shininess.
+				//pScene->mMaterials[i]->Get(AI_MATKEY_SHININESS, shininess);
+				//newMat->setShininess(shininess);
+
+				//// set opacity of material
+				//pScene->mMaterials[i]->Get(AI_MATKEY_OPACITY, opacity);
+				//newMat->setOpacity(opacity);
+
+				/*		pScene->mMaterials[i]->GetTexture(aiTextureType_NORMALS, 0, &texture_path[2], NULL, NULL, NULL, NULL, NULL);
+				pScene->mMaterials[i]->GetTexture(aiTextureType_NONE, 0, &texture_path[2], NULL, NULL, NULL, NULL, NULL);
+				pScene->mMaterials[i]->GetTexture(aiTextureType_UNKNOWN, 0, &texture_path[2], NULL, NULL, NULL, NULL, NULL);
+				pScene->mMaterials[i]->GetTexture(aiTextureType_AMBIENT, 0, &texture_path[2], NULL, NULL, NULL, NULL, NULL);
+				pScene->mMaterials[i]->GetTexture(aiTextureType_DISPLACEMENT, 0, &texture_path[2], NULL, NULL, NULL, NULL, NULL);
+				pScene->mMaterials[i]->GetTexture(aiTextureType_EMISSIVE, 0, &texture_path[2], NULL, NULL, NULL, NULL, NULL);
+				pScene->mMaterials[i]->GetTexture(aiTextureType_HEIGHT, 0, &texture_path[2], NULL, NULL, NULL, NULL, NULL);
+				pScene->mMaterials[i]->GetTexture(aiTextureType_LIGHTMAP, 0, &texture_path[2], NULL, NULL, NULL, NULL, NULL);
+				pScene->mMaterials[i]->GetTexture(aiTextureType_REFLECTION, 0, &texture_path[2], NULL, NULL, NULL, NULL, NULL);
+				pScene->mMaterials[i]->GetTexture(aiTextureType_SHININESS, 0, &texture_path[2], NULL, NULL, NULL, NULL, NULL);
+				pScene->mMaterials[i]->GetTexture(aiTextureType_SPECULAR, 0, &texture_path[2], NULL, NULL, NULL, NULL, NULL);
+				pScene->mMaterials[i]->GetTexture(aiTextureType_UNKNOWN, 0, &texture_path[2], NULL, NULL, NULL, NULL, NULL);*/
+			}
 		}
 		matList.emplace_back(newMat);
 	}

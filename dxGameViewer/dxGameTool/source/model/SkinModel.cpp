@@ -23,10 +23,7 @@ void SkinModel::Release()
 	vector<NodeInfo*>().swap(_nodeList);
 	vector<HierarchyMesh*>().swap(_meshList);
 
-
 	BaseModel::Release();
-
-
 }
 
 
@@ -38,53 +35,53 @@ void SkinModel::Render(ID3D11DeviceContext * dc)
 	//렌더링을 위한 버퍼셋팅
 	SetRenderBuffers(dc);
 		
+	//ModelTM Update
 	UpdateModelMatrix();
+
+	//Node Update
 	UpdateNodeTM();
 
-	for (auto meshData : _meshList) {
-		if (!meshData->isDraw) continue;
+	for (UINT i = 0; i < _meshByMaterial.size(); i++) {
+		if (_meshByMaterial[i].empty())
+			continue;
 
-		auto hiMesh = (HierarchyMesh*)meshData;
-		int matIdx = hiMesh->matIdx;
-		
-		
-		//본 정보 셋팅
-		if (!hiMesh->boneList.empty()) {
-			SetShader(_skinShader, false);
-			vector<XMMATRIX> calcBoneList;
-			for (auto boneInfo : hiMesh->boneList)
-				calcBoneList.emplace_back(XMMatrixTranspose(boneInfo.matOffset * boneInfo.linkNode->worldTM));
-
-			RM_SHADER.SetShaderParameters(dc, calcBoneList);
-		}
-		else {
-			SetShader(_texShader, false);
-
-			if (hiMesh->linkNode)
-				_tmModel = hiMesh->linkNode->worldTM * _tmModel;
-		}
-
-		RM_SHADER.SetShaderParameters(dc, _tmModel);
-		
 		//마테리얼 셋팅
-		if (matIdx > -1) {
-			auto texData = _materialList[matIdx].diffuseMap;
-		
-			if (texData)
-				dc->PSSetShaderResources(0, 1, &texData->data);
-		}
+		auto texData = _materialList[i].diffuseMap;
 
-		//렌더
-		GetShader()->IndexRender(dc, meshData->count, meshData->start);
+		if (texData)
+			dc->PSSetShaderResources(0, 1, &texData->data);
+
+		//Mesh Render
+		for (auto mesh : _meshByMaterial[i]) {
+			
+			//본 정보 셋팅
+			if (!mesh->boneList.empty()) {
+				SetShader(_skinShader, false);
+				vector<XMMATRIX> calcBoneList;
+				for (auto boneInfo : mesh->boneList)
+					calcBoneList.emplace_back(XMMatrixTranspose(boneInfo.matOffset * boneInfo.linkNode->worldTM));
+
+				RM_SHADER.SetShaderParameters(dc, calcBoneList);
+			}
+			//본 정보가 없는 경우
+			else {
+				SetShader(_texShader, false);
+
+				if (mesh->linkNode)
+					_tmModel = mesh->linkNode->worldTM * _tmModel;
+			}
+			RM_SHADER.SetShaderParameters(dc, _tmModel);
+
+			//렌더
+			GetShader()->IndexRender(dc, mesh->count, mesh->start);
+		}
 	}
+
+	//Unbind Texture
 	ID3D11ShaderResourceView* nullViews[] = { nullptr };
 	dc->PSSetShaderResources(0, 1, nullViews);
 }
 
-void SkinModel::InsertMaterial(Material& newMat)
-{
-	_materialList.emplace_back(newMat);
-}
 
 void SkinModel::PlayAni(int idx)
 {
@@ -94,6 +91,20 @@ void SkinModel::PlayAni(int idx)
 	}
 
 	_aniList[idx].Play();
+}
+
+
+void SkinModel::UpdateMeshByMaterial()
+{
+
+	_meshByMaterial.clear();
+	_meshByMaterial.resize(_materialList.size());
+
+
+	for (auto& mesh : _meshList) {
+		_meshByMaterial[mesh->matIdx].push_back(mesh);
+	}
+	
 }
 
 
