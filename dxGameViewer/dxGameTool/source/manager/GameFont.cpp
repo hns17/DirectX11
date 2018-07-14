@@ -223,13 +223,13 @@ void GameFont::Render(ID3D11DeviceContext * dc)
 	////여기서 렌더하자
 	_fontModel->SetIndexCnt(idxCnt);
 
-	DEVICEMANAGER.TurnZBufferOff();
-	DEVICEMANAGER.TurnOnAlphaBlending();
+	DEVICEMANAGER.TurnZBufferOff(dc);
+	DEVICEMANAGER.TurnOnAlphaBlending(dc);
 	
 	_fontModel->Render(dc);
 
-	DEVICEMANAGER.TurnOffAlphaBlending();
-	DEVICEMANAGER.TurnZBufferOn();
+	DEVICEMANAGER.TurnOffAlphaBlending(dc);
+	DEVICEMANAGER.TurnZBufferOn(dc);
 	_nowLength = 0;
 }
 
@@ -240,6 +240,8 @@ bool GameFont::LoadTexture(std::string fileName)
 	//폰트 텍스쳐 로딩
 	wstring filePath = CA2CT(fileName.c_str());
 
+
+	//dc가 문제가 될 수 있다.
 	_fontTex = RM_TEXTURE.LoadTexture(filePath);
 	
 	if (!_fontTex) {

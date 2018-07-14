@@ -5,7 +5,7 @@
 //==================================================================
 class GameNode
 {
-protected:
+public:
 	//Render View Info
 	static PWindowRender _sceneInfo;
 

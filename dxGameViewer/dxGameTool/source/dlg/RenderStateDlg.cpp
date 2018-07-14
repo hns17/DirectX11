@@ -11,7 +11,7 @@ IMPLEMENT_DYNAMIC(RenderStateDlg, CDialogEx)
 RenderStateDlg::RenderStateDlg(CWnd* pParent /*=NULL*/)
 	: CDialogEx(IDD_DLG_RENDER_STATE, pParent)
 {
-
+	Create(IDD_DLG_RENDER_STATE);
 }
 
 RenderStateDlg::~RenderStateDlg()
@@ -44,31 +44,31 @@ BOOL RenderStateDlg::OnInitDialog()
 //Set Solid Mode Render
 void RenderStateDlg::OnBnClickedRenderdlgRendermodeSolidRadio()
 {
-	DEVICEMANAGER.SetFillMode(D3D11_FILL_SOLID);
+	DEVICEMANAGER.ChangeFillMode(D3D11_FILL_SOLID);
 }
 
 //Set Wire Mode Render
 void RenderStateDlg::OnBnClickedRenderdlgRendermodeWireframeRadio()
 {
-	DEVICEMANAGER.SetFillMode(D3D11_FILL_WIREFRAME);
+	DEVICEMANAGER.ChangeFillMode(D3D11_FILL_WIREFRAME);
 }
 
 
 //Set Off Face Culling
 void RenderStateDlg::OnBnClickedRenderdlgCullmodeNoneRadio()
 {
-	DEVICEMANAGER.SetCullMode(D3D11_CULL_NONE);
+	DEVICEMANAGER.ChangeCullMode(D3D11_CULL_NONE);
 }
 
 //Set Front Face Culling
 void RenderStateDlg::OnBnClickedRenderdlgCullmodeFrontfaceRadio()
 {
-	DEVICEMANAGER.SetCullMode(D3D11_CULL_FRONT);
+	DEVICEMANAGER.ChangeCullMode(D3D11_CULL_FRONT);
 }
 
 //Set Back Face Culling
 void RenderStateDlg::OnBnClickedRenderdlgCullmodeBackfaceRadio()
 {
-	DEVICEMANAGER.SetCullMode(D3D11_CULL_BACK);
+	DEVICEMANAGER.ChangeCullMode(D3D11_CULL_BACK);
 }
 

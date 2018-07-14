@@ -96,6 +96,7 @@ bool RMShader::SetShaderParameters(ID3D11DeviceContext * dc, XMMATRIX matWorld)
 	dataPtr->matWorld = XMMatrixTranspose(matWorld);
 	
 	dc->Unmap(matBuff, 0);
+	
 	//bufferSturct.h 의 정보와 일치해야 한다.
 	bufferNumber = 1;
 
@@ -109,7 +110,7 @@ bool RMShader::SetShaderParameters(ID3D11DeviceContext * dc, XMMATRIX matWorld)
 bool RMShader::SetShaderParameters(ID3D11DeviceContext * dc, XMMATRIX matView, XMMATRIX matProj)
 {
 	D3D11_MAPPED_SUBRESOURCE mappedResource;
-	unsigned int bufferNumber;
+	unsigned int bufferNumber =0;
 
 	//셰이더와 연결된 매트릭스 버퍼 주소를 가져온다.
 	auto matBuff = _cameraBuffer;
@@ -127,8 +128,6 @@ bool RMShader::SetShaderParameters(ID3D11DeviceContext * dc, XMMATRIX matView, X
 	dataPtr->matProj = XMMatrixTranspose(matProj);
 
 	dc->Unmap(matBuff, 0);
-	//bufferSturct.h 의 정보와 일치해야 한다.
-	bufferNumber = 0;
 
 	dc->VSSetConstantBuffers(bufferNumber, 1, &matBuff);
 

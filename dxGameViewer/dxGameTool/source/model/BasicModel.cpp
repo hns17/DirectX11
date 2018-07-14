@@ -19,7 +19,6 @@ void BasicModel::Render(ID3D11DeviceContext * dc)
 	//렌더링을 위한 버퍼셋팅
 	SetRenderBuffers(dc);
 
-
 	if (_indexCount != 0)
 		GetShader()->IndexRender(dc, _indexCount, 0);
 	else

@@ -12,7 +12,7 @@ protected:
 
 public:
 	// 리소스 추가
-	T AddResource(wstring fileName, void* param = NULL);
+	T AddResource(wstring fileName, void* param = nullptr);
 	// 리소스 삭제
 	void RemoveResource(wstring fileName);
 	void RemoveResource(T);
@@ -42,7 +42,7 @@ public:
 	//=============================================================
 	//	## 리소스 로드 해제관련 순수가상함수 ##
 	//=============================================================
-	virtual T loadResource(wstring fileName, void* param = NULL) PURE;
+	virtual T loadResource(wstring fileName, void* param = nullptr) PURE;
 	virtual void releaseResource(T data) PURE;
 
 	ResourceManager() {}

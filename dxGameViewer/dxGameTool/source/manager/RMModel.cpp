@@ -18,7 +18,7 @@ SkinModel * RMModel::loadResource(wstring fileName, void * param)
 
 	//¸ðµ¨·Îµå
 	ModelLoader load;
-	return load.LoadModel(fileName.c_str(), flag);;
+	return load.LoadModel(fileName.c_str(), flag);
 }
 
 //¸ðµ¨ »èÁ¦

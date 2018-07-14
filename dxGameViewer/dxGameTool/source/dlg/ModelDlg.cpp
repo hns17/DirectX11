@@ -15,7 +15,7 @@ IMPLEMENT_DYNAMIC(ModelDlg, CDialogEx)
 ModelDlg::ModelDlg(CWnd* pParent /*=NULL*/)
 	: CDialogEx(IDD_DLG_MODEL, pParent)
 {
-
+	Create(IDD_DLG_MODEL);
 }
 
 ModelDlg::~ModelDlg()
@@ -97,6 +97,7 @@ BOOL ModelDlg::OnInitDialog()
 void ModelDlg::InsertModel(CString name, CString path, SkinModel* model)
 {
 	if (!model)	return;
+	
 
 	int index = _lstModelList.GetItemCount();
 	_lstModelList.InsertItem(index, name);
@@ -104,8 +105,10 @@ void ModelDlg::InsertModel(CString name, CString path, SkinModel* model)
 
 	_lstModelList.SetItemData(index, (DWORD_PTR)model);
 
+
 	//모델 추가 메시지, 다른 다이얼로그 정보 갱신 메시지
-	::SendMessageW(_hWnd, WM_INSERT_MODEL, NULL, NULL);
+	::PostMessageW(m_hWnd,WM_INSERT_MODEL, NULL, NULL);
+
 }
 
 //다이얼로그 컨트롤 업데이트
@@ -238,6 +241,8 @@ void ModelDlg::OnDeleteModel()
 	_lstModelList.DeleteItem(selectIndex);
 	
 	UpdateControl();
+
+	::PostMessageW(m_hWnd, WM_DELETE_MODEL, NULL, NULL);
 }
 
 //모델 리스트 클릭 이벤트, 선택된 모델에 맞게 다이얼로그 정보 변경
@@ -483,6 +488,7 @@ void ModelDlg::OnLoadModel()
 	}
 
 	auto flag = stateDlg.GetAiState();
+
 	InsertModel(fileDlg.GetFileName(), fileDlg.GetPathName(), RM_MODEL.AddResource(path, &flag));
 }
 

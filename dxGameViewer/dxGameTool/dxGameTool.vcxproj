@@ -191,6 +191,7 @@
     </ResourceCompile>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClInclude Include="DlgThread.h" />
     <ClInclude Include="dxGameTool.h" />
     <ClInclude Include="include\tinyxml\tinystr.h" />
     <ClInclude Include="include\tinyxml\tinyxml.h" />
@@ -231,6 +232,7 @@
     <ClInclude Include="targetver.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="DlgThread.cpp" />
     <ClCompile Include="dxGameTool.cpp" />
     <ClCompile Include="include\tinyxml\tinystr.cpp" />
     <ClCompile Include="include\tinyxml\tinyxml.cpp" />

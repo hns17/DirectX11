@@ -7,9 +7,9 @@ PWindowRender GameNode::_sceneInfo = NULL;
 //==================================================================
 //		## 초기화 ## Init(void)
 //==================================================================
-HRESULT MainGame::Init(void)
+HRESULT MainGame::Init(ID3D11DeviceContext* dc)
 {
-	_sceneInfo = DEVICEMANAGER.InitRenderScreen(_hWnd, WINSIZEX, WINSIZEY, 0.1f, 1000.f);
+	_sceneInfo = DEVICEMANAGER.InitRenderScreen(_hWnd, dc, WINSIZEX, WINSIZEY, 0.1f, 1000.f);
 	InitScene();
 
 	return S_OK;
@@ -28,30 +28,16 @@ HRESULT MainGame::InitScene()
 	return S_OK;
 }
 
-
-
-
 //==================================================================
 //		## 업데이트 ## Update(void)
 //==================================================================
 void MainGame::Update(void)
 {
 	TIMEMANAGER.Update(0.0f);
-	
-	
-	TCHAR buff[255];
-	wsprintf(buff, L"프레임 비율 : %d", TIMEMANAGER.GetFrameRate());
-	FONTMANAGER.Print(buff, 30, 80, 20, XMFLOAT3(1,1,0));
-
-
-	if (DEVICEMANAGER.IsVSync()) {
-		FONTMANAGER.Print(L"수직동기화(F3) : On", 30, 180);
-	}
-	else {
-		FONTMANAGER.Print(L"수직동기화(F3) : Off", 30, 180);
-	}
-
 	SCENEMANAGER.Update();
+	
+	UpdateMainGameFont();
+
 	_sceneInfo->viewMatrix = _mainCam.Update(TIMEMANAGER.GetElapedTime());
 }
 
@@ -61,7 +47,11 @@ void MainGame::Update(void)
 //==================================================================
 void MainGame::Render(ID3D11DeviceContext* dc)
 {	
-	DEVICEMANAGER.BeginScene(_sceneInfo, 0, 0, 0, 1);
+	//Set Main DC State
+	DEVICEMANAGER.SetRasterState(dc);
+	DEVICEMANAGER.SetSamplerState(dc);
+
+	DEVICEMANAGER.BeginScene(_sceneInfo, dc, 0, 0, 0, 1);
 	
 	//투영 및 뷰 행렬 설정
 	RM_SHADER.SetShaderParameters(dc, _sceneInfo->viewMatrix, _sceneInfo->projectionMatrix);
@@ -71,6 +61,25 @@ void MainGame::Render(ID3D11DeviceContext* dc)
 	RM_SHADER.SetShaderParameters(dc, XMMatrixTranslation(0, 0, 1), _sceneInfo->orthoMatrix);
 	FONTMANAGER.Render(dc);
 	
+	//command Excute
+	DEVICEMANAGER.ExcuteCommand(dc);
+
+	//SwapChain
 	DEVICEMANAGER.EndScene(_sceneInfo);
+}
+
+void MainGame::UpdateMainGameFont()
+{
+	TCHAR buff[255];
+	wsprintf(buff, L"프레임 비율 : %d", TIMEMANAGER.GetFrameRate());
+	FONTMANAGER.Print(buff, 30, 80, 20, XMFLOAT3(1, 1, 0));
+
+
+	if (DEVICEMANAGER.IsVSync()) {
+		FONTMANAGER.Print(L"수직동기화(F3) : On", 30, 180);
+	}
+	else {
+		FONTMANAGER.Print(L"수직동기화(F3) : Off", 30, 180);
+	}
 }
 

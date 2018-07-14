@@ -2,7 +2,6 @@
 #include "DeviceManager.h"
 
 
-
 DeviceManager::DeviceManager()
 {
 
@@ -38,8 +37,9 @@ bool DeviceManager::InitDepthState()
 	depthEnabledStencilDesc.BackFace.StencilPassOp = D3D11_STENCIL_OP_KEEP;
 	depthEnabledStencilDesc.BackFace.StencilFunc = D3D11_COMPARISON_ALWAYS;
 
+
 	// Create the depth stencil state.
-	bool result = _device->CreateDepthStencilState(&depthEnabledStencilDesc, &_depthEnabledStencilState);
+	bool result = _device->CreateDepthStencilState(&depthEnabledStencilDesc, _depthEnabledStencilState.GetAddressOf());
 	if (FAILED(result)) { return false; }
 
 
@@ -64,20 +64,22 @@ bool DeviceManager::InitDepthState()
 	depthDisabledStencilDesc.BackFace.StencilFunc = D3D11_COMPARISON_ALWAYS;
 
 	// Create the state using the device.
-	result = _device->CreateDepthStencilState(&depthDisabledStencilDesc, &_depthDisabledStencilState);
+	result = _device->CreateDepthStencilState(&depthDisabledStencilDesc, _depthDisabledStencilState.GetAddressOf());
 	if (FAILED(result)) { return false; }
 
 	return true;
 }
 
-bool DeviceManager::InitDepthBuffer(PWindowRender pWR,int screenWidth, int screenHeight)
+bool DeviceManager::InitDepthBuffer(PWindowRender pWR, ID3D11DeviceContext* dc, int screenWidth, int screenHeight)
 {
 	D3D11_TEXTURE2D_DESC depthBufferDesc;
 	D3D11_DEPTH_STENCIL_VIEW_DESC depthStencilViewDesc;
 
 	//========== 깊이 버퍼 생성 =========//
 	// Set the depth stencil state.
-	_deviceContext->OMSetDepthStencilState(_depthEnabledStencilState.Get(), 1);
+
+	auto depthEnabledStencilState = _depthEnabledStencilState.Get();
+	dc->OMSetDepthStencilState(depthEnabledStencilState, 1);
 
 	// Initialize the description of the depth buffer.
 	ZeroMemory(&depthBufferDesc, sizeof(depthBufferDesc));
@@ -136,14 +138,14 @@ bool DeviceManager::InitAlphaBlend()
 	blendStateDescription.RenderTarget[0].RenderTargetWriteMask = 0x0f;
 
 	// Create the blend state using the description.
-	result = _device->CreateBlendState(&blendStateDescription, &_alphaEnableBlendingState);
+	result = _device->CreateBlendState(&blendStateDescription, _alphaEnableBlendingState.GetAddressOf());
 	if (FAILED(result)) { return false; }
 
 	// Modify the description to create an alpha disabled blend state description.
 	blendStateDescription.RenderTarget[0].BlendEnable = FALSE;
 
-	// Create the blend state using the description.
-	result = _device->CreateBlendState(&blendStateDescription, &_alphaDisableBlendingState);
+	// Create the blend state using the description.	
+	result = _device->CreateBlendState(&blendStateDescription, _alphaDisableBlendingState.GetAddressOf());
 	if (FAILED(result)) { return false; }
 
 	return true;
@@ -164,24 +166,21 @@ bool DeviceManager::InitRasterize()
 	_rasterDesc.ScissorEnable = false;
 	_rasterDesc.SlopeScaledDepthBias = 0.0f;
 
-	// Create the rasterizer state from the description we just filled out.
-	if (FAILED(setRasterState())) {
+	if (FAILED(_device->CreateRasterizerState(&_rasterDesc, _rasterState.GetAddressOf()))) {
 		return false;
 	}
-	
+
 	return true;
 }
 
-bool DeviceManager::setRasterState()
+void DeviceManager::SetRasterState(ID3D11DeviceContext* dc)
 {
-	if (FAILED(_device->CreateRasterizerState(&_rasterDesc, &_rasterState))) {
-		return false;
-	}
+	dc->RSSetState(_rasterState.Get());
+}
 
-	// Now set the rasterizer state.
-	_deviceContext->RSSetState(_rasterState.Get());
-
-	return true;
+void DeviceManager::SetSamplerState(ID3D11DeviceContext * dc)
+{
+	dc->PSSetSamplers(0, 1, _sampleState.GetAddressOf());
 }
 
 bool DeviceManager::InitSamplerState()
@@ -199,7 +198,7 @@ bool DeviceManager::InitSamplerState()
 	_sampleDesc.MinLOD = 0;
 	_sampleDesc.MaxLOD = D3D11_FLOAT32_MAX;
 
-	if (!SetSamplerAddrees(D3D11_TEXTURE_ADDRESS_WRAP)) {
+	if (!ChangeSamplerAddrees(D3D11_TEXTURE_ADDRESS_WRAP)) {
 		return false;
 	}
 		
@@ -299,7 +298,8 @@ HRESULT DeviceManager::CreateDevice(int screenWidth, int screenHeight)
 	factory = 0;
 
 	D3D_FEATURE_LEVEL featureLevel = D3D_FEATURE_LEVEL_11_0;
-	if (FAILED(D3D11CreateDevice(NULL, D3D_DRIVER_TYPE_HARDWARE, 0, D3D11_CREATE_DEVICE_DEBUG, 0, 0, D3D11_SDK_VERSION, &_device, &featureLevel, &_deviceContext))) {
+	if (FAILED(D3D11CreateDevice(NULL, D3D_DRIVER_TYPE_HARDWARE, 0, D3D11_CREATE_DEVICE_DEBUG, 0, 0, 
+									D3D11_SDK_VERSION, _device.GetAddressOf(), &featureLevel, _deviceContext.GetAddressOf()))) {
 		return false;
 	}
 
@@ -312,6 +312,7 @@ HRESULT DeviceManager::CreateDevice(int screenWidth, int screenHeight)
 		return false;
 	}
 
+
 	if (FAILED(InitRasterize())) {
 		return false;
 	}
@@ -323,12 +324,12 @@ HRESULT DeviceManager::CreateDevice(int screenWidth, int screenHeight)
 	return S_OK;
 }
 
-PWindowRender DeviceManager::InitRenderScreen(HWND hWnd, int screenWidth, int screenHeight, float screenNear, float screenDepth)
+PWindowRender DeviceManager::InitRenderScreen(HWND hWnd, ID3D11DeviceContext* dc, int screenWidth, int screenHeight, float screenNear, float screenDepth)
 {
 
 	PWindowRender pWR = new WindowRender;
 	DXGI_SWAP_CHAIN_DESC swapChainDesc;
-	ID3D11Texture2D* backBufferPtr;
+	ComPtr<ID3D11Texture2D> backBufferPtr = nullptr;
 
 	
 
@@ -394,24 +395,20 @@ PWindowRender DeviceManager::InitRenderScreen(HWND hWnd, int screenWidth, int sc
 
 
 	// Get the pointer to the back buffer.
-	if (FAILED(pWR->swapChain->GetBuffer(0, __uuidof(ID3D11Texture2D), (LPVOID*)&backBufferPtr))) {
+	if (FAILED(pWR->swapChain->GetBuffer(0, __uuidof(ID3D11Texture2D), (LPVOID*)backBufferPtr.GetAddressOf()))) {
 		SAFE_DELETE(pWR);
 		return pWR;
 	}
 
 	// Create the render target view with the back buffer pointer.
-	if (FAILED(_device->CreateRenderTargetView(backBufferPtr, NULL, &pWR->renderTargetView))) {
+	if (FAILED(_device->CreateRenderTargetView(backBufferPtr.Get(), NULL, &pWR->renderTargetView))) {
 		SAFE_DELETE(pWR);
 		return pWR;
 	}
 
-	// Release pointer to the back buffer as we no longer need it.
-	backBufferPtr->Release();
-	backBufferPtr = 0;
-
-
-	if (!InitDepthBuffer(pWR, screenWidth, screenHeight)) {
-		return false;
+	if (!InitDepthBuffer(pWR, dc, screenWidth, screenHeight)) {
+		SAFE_DELETE(pWR);
+		return pWR;
 	}
 
 	//뷰포트 정보 구성
@@ -436,37 +433,52 @@ PWindowRender DeviceManager::InitRenderScreen(HWND hWnd, int screenWidth, int sc
 	return pWR;
 }
 
+HRESULT DeviceManager::SetDeferredContext(ID3D11DeviceContext** defContext)
+{
+	return _device->CreateDeferredContext(0, defContext);
+}
 
 
-void DeviceManager::SetFillMode(D3D11_FILL_MODE mode)
+
+
+
+void DeviceManager::ChangeFillMode(D3D11_FILL_MODE mode)
 {
 	_rasterDesc.FillMode = mode;
-	setRasterState();
+	
+	if (FAILED(_device->CreateRasterizerState(&_rasterDesc, _rasterState.GetAddressOf()))) {
+		return;
+	}
+
 }
 
-void DeviceManager::SetCullMode(D3D11_CULL_MODE mode)
+void DeviceManager::ChangeCullMode(D3D11_CULL_MODE mode)
 {
 	_rasterDesc.CullMode = mode;
-	setRasterState();
+
+	if (FAILED(_device->CreateRasterizerState(&_rasterDesc, _rasterState.GetAddressOf()))) {
+		return;
+	}
+
 }
 
-bool DeviceManager::SetSamplerAddrees(D3D11_TEXTURE_ADDRESS_MODE addMode)
+bool DeviceManager::ChangeSamplerAddrees(D3D11_TEXTURE_ADDRESS_MODE addMode)
 {
 	_sampleDesc.AddressU = addMode;
 	_sampleDesc.AddressV = addMode;
 	_sampleDesc.AddressW = addMode;
 
-	if (FAILED(_device->CreateSamplerState(&_sampleDesc, &_sampleState))) {
+	
+	if (FAILED(_device->CreateSamplerState(&_sampleDesc, _sampleState.GetAddressOf()))) {
 		return false;
 	}
 
-	_deviceContext->PSSetSamplers(0, 1, &_sampleState);
 	return true;
 }
 
 
 
-void DeviceManager::TurnOnAlphaBlending()
+void DeviceManager::TurnOnAlphaBlending(ID3D11DeviceContext* dc)
 {
 	float blendFactor[4];
 
@@ -478,10 +490,10 @@ void DeviceManager::TurnOnAlphaBlending()
 	blendFactor[3] = 0.0f;
 
 	// Turn on the alpha blending.
-	_deviceContext->OMSetBlendState(_alphaEnableBlendingState.Get(), blendFactor, 0xffffffff);
+	dc->OMSetBlendState(_alphaEnableBlendingState.Get(), blendFactor, 0xffffffff);
 }
 
-void DeviceManager::TurnOffAlphaBlending()
+void DeviceManager::TurnOffAlphaBlending(ID3D11DeviceContext* dc)
 {
 	float blendFactor[4];
 
@@ -493,11 +505,21 @@ void DeviceManager::TurnOffAlphaBlending()
 	blendFactor[3] = 0.0f;
 
 	// Turn off the alpha blending.
-	_deviceContext->OMSetBlendState(_alphaDisableBlendingState.Get(), blendFactor, 0xffffffff);
+	dc->OMSetBlendState(_alphaDisableBlendingState.Get(), blendFactor, 0xffffffff);
+}
+
+void DeviceManager::TurnZBufferOn(ID3D11DeviceContext * dc)
+{
+	dc->OMSetDepthStencilState(_depthEnabledStencilState.Get(), 1);
+}
+
+void DeviceManager::TurnZBufferOff(ID3D11DeviceContext * dc)
+{
+	dc->OMSetDepthStencilState(_depthDisabledStencilState.Get(), 1);
 }
 
 
-void DeviceManager::BeginScene(PWindowRender pWR, float red, float green, float blue, float alpha)
+void DeviceManager::BeginScene(PWindowRender pWR, ID3D11DeviceContext* dc, float red, float green, float blue, float alpha)
 {
 	float color[4];
 
@@ -507,15 +529,17 @@ void DeviceManager::BeginScene(PWindowRender pWR, float red, float green, float 
 	color[2] = blue;
 	color[3] = alpha;
 
-	_deviceContext->RSSetViewports(1, &pWR->viewport);
+	
+	dc->RSSetViewports(1, &pWR->viewport);
 	// Bind the render target view and depth stencil buffer to the output render pipeline.
-	_deviceContext->OMSetRenderTargets(1, &pWR->renderTargetView, pWR->depthStencilView);
+
+ 	dc->OMSetRenderTargets(1, &pWR->renderTargetView, pWR->depthStencilView);
 
 	// Clear the back buffer.
-	_deviceContext->ClearRenderTargetView(pWR->renderTargetView, color);
+	dc->ClearRenderTargetView(pWR->renderTargetView, color);
 										   
 	// Clear the depth buffer.			   
-	_deviceContext->ClearDepthStencilView(pWR->depthStencilView, D3D11_CLEAR_DEPTH, 1.0f, 0);
+	dc->ClearDepthStencilView(pWR->depthStencilView, D3D11_CLEAR_DEPTH, 1.0f, 0);
 
 }
 
@@ -533,6 +557,20 @@ void DeviceManager::EndScene(PWindowRender pWR)
 		pWR->swapChain->Present(0, 0);
 	}
 }
+
+
+void DeviceManager::ExcuteCommand(ID3D11DeviceContext * defContext)
+{
+	if (!defContext)
+		return;
+
+	ID3D11CommandList* cmdList = nullptr;
+	if (SUCCEEDED(defContext->FinishCommandList(false, &cmdList))) {
+		_deviceContext.Get()->ExecuteCommandList(cmdList, false);
+		SAFE_RELEASE(cmdList);
+	}
+}
+
 
 XMFLOAT3 DeviceManager::ConvertScreenCoordinate(PWindowRender pWR, POINT ptWinPos, XMVECTOR cameraPos, bool isDepthBase)
 {

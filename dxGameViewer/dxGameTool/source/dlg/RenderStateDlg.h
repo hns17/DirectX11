@@ -16,8 +16,6 @@ public:
 	RenderStateDlg(CWnd* pParent = NULL);   // 표준 생성자입니다.
 	virtual ~RenderStateDlg();
 
-
-
 protected:
 	virtual void DoDataExchange(CDataExchange* pDX);    // DDX/DDV 지원입니다.
 	virtual BOOL OnInitDialog();

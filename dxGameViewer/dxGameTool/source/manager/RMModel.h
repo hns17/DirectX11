@@ -14,7 +14,7 @@ public:
 	~RMModel() {};
 
 	//¸ðµ¨ ·Îµå
-	SkinModel* loadResource(wstring fileName, void* param = NULL);
+	SkinModel* loadResource(wstring fileName, void* param= nullptr);
 
 	//¸ðµ¨ »èÁ¦
 	void releaseResource(SkinModel* data);

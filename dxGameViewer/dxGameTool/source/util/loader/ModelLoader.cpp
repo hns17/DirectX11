@@ -27,7 +27,7 @@ SkinModel* ModelLoader::LoadModel(CString path, UINT flag)
 		ProcessMesh(pScene->mMeshes[i], vertices, indices, model->GetMeshList());
 
 	//재질 정보 생성
-	ProcessMaterial(pScene, model->GetMaterialList(), MYUTIL::GetDirectoryPath(path));
+	ProcessMaterial( pScene, model->GetMaterialList(), MYUTIL::GetDirectoryPath(path));
 	
 	//계층구조(본) 정보 구성
 	ProcessNode(pScene->mRootNode, model);
@@ -174,13 +174,13 @@ void ModelLoader::ProcessMaterial(const aiScene * pScene, vector<Material>& matL
 		if (pScene->mMaterials[i] != NULL) {
 
 			// variables for materials
-			aiColor3D color(0.0f, 0.0f, 0.0f);
+			/*aiColor3D color(0.0f, 0.0f, 0.0f);
 			aiColor3D ambient(0.0f, 0.0f, 0.0f);
 			aiColor3D specular(0.0f, 0.0f, 0.0f);
 			aiColor3D transparent(0.0f, 0.0f, 0.0f);
 
 			float opacity = 0.0f;
-			float shininess = 0.0f;
+			float shininess = 0.0f;*/
 
 			aiString  texture_path[3];
 			pScene->mMaterials[i]->GetTexture(aiTextureType_DIFFUSE, 0, &texture_path[0], NULL, NULL, NULL, NULL, NULL);

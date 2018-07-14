@@ -12,7 +12,10 @@ TextureDlg::TextureDlg(CWnd* pParent /*=NULL*/)
 	: CDialogEx(IDD_DLG_TEXTURE, pParent)
 {
 
+	Create(IDD_DLG_TEXTURE);
 }
+
+
 
 TextureDlg::~TextureDlg()
 {
@@ -67,8 +70,10 @@ BOOL TextureDlg::OnInitDialog()
 	this->GetDlgItem(IDC_TEX_IMGFRAME_GROUP)->GetWindowRect(&rc);
 	ScreenToClient(&rc);
 
+	DEVICEMANAGER.SetDeferredContext(_defContext.GetAddressOf());
+
 	//DX로 렌더링 할 윈도우와 스크린 설정
-	_pWindow = DEVICEMANAGER.InitRenderScreen(m_hWnd, winSize.Width(), winSize.Height(), 0.1f, 10.f);
+	_pWindow = DEVICEMANAGER.InitRenderScreen(m_hWnd, _defContext.Get(), winSize.Width(), winSize.Height(), 0.1f, 10.f);
 	
 	_pWindow->viewport.TopLeftX = (float)rc.left + 12;		_pWindow->viewport.TopLeftY = (float)rc.top + 14;
 	_pWindow->viewport.Width = (float)rc.Width() - 2;		_pWindow->viewport.Height = (float)rc.Height() - 2;
@@ -93,7 +98,6 @@ BOOL TextureDlg::OnInitDialog()
 
 	UpdateTextureList();
 
-	_dc = DEVICEMANAGER.GetDeviceContext();
 	return TRUE;  			  
 }
 
@@ -103,28 +107,27 @@ void TextureDlg::OnPaint()
 {
 	CPaintDC dc(this);
 
-	if (!_textureImage->GetTexture()) { return; }
-
+	auto defContext = _defContext.Get();
+	
 	//선택된 텍스쳐가 있으면 화면에 그려준다.
-	DEVICEMANAGER.BeginScene(_pWindow, _bgColor.x, _bgColor.y, _bgColor.z, 1);
+	DEVICEMANAGER.BeginScene(_pWindow, defContext, _bgColor.x, _bgColor.y, _bgColor.z, 1);
 
 	//proj, view 매트릭스를 직교에 맞게 변환한다.
 	XMMATRIX matIdentity = XMMatrixIdentity();
-	RM_SHADER.SetShaderParameters(_dc, matIdentity, matIdentity);
-
+	RM_SHADER.SetShaderParameters(defContext, matIdentity, matIdentity);
 
 	//알파블렌딩 활성화, 깊이 버퍼 해제
-	DEVICEMANAGER.TurnZBufferOff();
-	DEVICEMANAGER.TurnOnAlphaBlending();
+	DEVICEMANAGER.TurnZBufferOff(defContext);
+	DEVICEMANAGER.TurnOnAlphaBlending(defContext);
 
 	//렌더
-	_textureImage->Render(_dc);
+	_textureImage->Render(defContext);
 	
-	DEVICEMANAGER.TurnOffAlphaBlending();
-	DEVICEMANAGER.TurnZBufferOn();
+	DEVICEMANAGER.TurnOffAlphaBlending(defContext);
+	DEVICEMANAGER.TurnZBufferOn(defContext);
 
+	::SendMessage(_hWnd, WM_UPDATE_COMMAND, NULL, (LPARAM)defContext);
 	DEVICEMANAGER.EndScene(_pWindow);
-
 }
 
 
@@ -163,14 +166,16 @@ void TextureDlg::OnNMRClickTexdlgTextureListctrl(NMHDR *pNMHDR, LRESULT *pResult
 //텍스쳐 추가 메뉴 선택 이벤트
 void TextureDlg::OnInsertInserttexture()
 {
+	
+
 	//파일 열기 공용 다이얼로그 호출
 	CFileDialog dlg(TRUE); 
 	if (dlg.DoModal() == IDOK) {
-		if (!RM_TEXTURE.AddResource((wstring)dlg.GetPathName(), &dlg.GetFileExt())) {
+
+		if (!RM_TEXTURE.AddResource((wstring)dlg.GetPathName())) {
 			//텍스쳐 로드 실패하면 메시지 박스 호출
 			AfxMessageBox(L"Load Failed");		
 		} else {			
-			//성공하면 정보 갱신
 			UpdateTextureList();
 		}
 	}
@@ -204,28 +209,6 @@ void TextureDlg::UpdateTextureList()
 
 
 
-//메시지 처리 함수
-BOOL TextureDlg::OnWndMsg(UINT message, WPARAM wParam, LPARAM lParam, LRESULT* pResult)
-{
-	
-	//모델이 추가되면 텍스쳐 정보 업데이트
-	if (message == WM_INSERT_MODEL) {
-		UpdateTextureList();
-	}
-	//모델이 삭제되면
-	else if (message == WM_DELETE_MODEL) {
-		if (_currentModel == (SkinModel*)wParam) {
-			_currentModel = NULL;
-			_currentMesh = NULL;
-
-			_cmbModelList.SetCurSel(-1);
-			UpdateObjList();
-			UpdateObjInfo();
-		}
-	}
-
-	return CDialogEx::OnWndMsg(message, wParam, lParam, pResult);
-}
 
 
 //텍스쳐 리스트 선택 이벤트
@@ -292,7 +275,7 @@ void TextureDlg::UpdateSelectTexItem()
 		SetDlgItemText(IDC_TEXDLG_PATH_EDIT, RM_TEXTURE.GetResourceKey(index)->c_str());
 	}
 
-	Invalidate(); 
+	Invalidate(FALSE); 
 }
 
 //오브젝트 트리 컨트롤 업데이트
@@ -411,7 +394,7 @@ void TextureDlg::OnNMClickTexdlgTreeObjlist(NMHDR *pNMHDR, LRESULT *pResult)
 	}
 
 	UpdateObjInfo();
-	Invalidate(TRUE);
+	Invalidate(FALSE);
 
 	*pResult = 0;
 }
@@ -506,7 +489,7 @@ void TextureDlg::OnCbnSelchangeTexdlgComboModellist()
 	}
 	
 	UpdateObjList();
-	Invalidate();
+	Invalidate(FALSE);
 }
 
 
@@ -565,6 +548,30 @@ void TextureDlg::OnCbnSelchangeTexdlgComboBump()
 //더블 클릭으로 트리 확장시 윈도우 컨트롤 업데이트
 void TextureDlg::OnNMDblclkTexdlgTreeObjlist(NMHDR *pNMHDR, LRESULT *pResult)
 {
-	Invalidate();
+	Invalidate(FALSE);
 	*pResult = 0;
+}
+
+
+//메시지 처리 함수
+BOOL TextureDlg::OnWndMsg(UINT message, WPARAM wParam, LPARAM lParam, LRESULT* pResult)
+{
+
+	//모델이 추가되면 텍스쳐 정보 업데이트
+	if (message == WM_INSERT_MODEL) {
+		UpdateTextureList();
+	}
+	//모델이 삭제되면
+	else if (message == WM_DELETE_MODEL) {
+		_currentModel = NULL;
+		_currentMesh = NULL;
+
+		_cmbModelList.SetCurSel(-1);
+		UpdateObjList();
+		UpdateObjInfo();
+
+		Invalidate(FALSE);
+	}
+
+	return CDialogEx::OnWndMsg(message, wParam, lParam, pResult);
 }

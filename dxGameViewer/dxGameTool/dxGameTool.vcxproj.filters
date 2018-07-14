@@ -184,6 +184,9 @@
     <ClInclude Include="source\model\BasicModel.h">
       <Filter>GameFrameWork\Model\Type\System</Filter>
     </ClInclude>
+    <ClInclude Include="DlgThread.h">
+      <Filter>WndFrame</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="dxGameTool.cpp">
@@ -284,6 +287,9 @@
     </ClCompile>
     <ClCompile Include="source\model\BasicModel.cpp">
       <Filter>GameFrameWork\Model\Type\System</Filter>
+    </ClCompile>
+    <ClCompile Include="DlgThread.cpp">
+      <Filter>WndFrame</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

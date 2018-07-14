@@ -61,18 +61,20 @@ ID3D11ShaderResourceView * RMTexture::LoadTexture(wstring fileName)
 
 	// 빈 텍스처를 생성합니다.
 	ID3D11Device*				device = DEVICEMANAGER.GetDevice();
-	ID3D11DeviceContext*		dc = DEVICEMANAGER.GetDeviceContext();
 	ID3D11Texture2D*			texture = nullptr;
-	HRESULT hResult = device->CreateTexture2D(&textureDesc, NULL, &texture);
+	HRESULT hResult = device->CreateTexture2D(&textureDesc, nullptr, &texture);
 	if (FAILED(hResult)) {
-		return NULL;
+		return nullptr;
 	}
 
 	//이미지 사이즈
 	UINT rowPitch = (width * 4) * sizeof(unsigned char);
 
+	ID3D11DeviceContext* defContext = nullptr;
+	DEVICEMANAGER.SetDeferredContext(&defContext);
+
 	// 이미지 데이터를 텍스처에 복사합니다.
-	dc->UpdateSubresource(texture, 0, NULL, bits, rowPitch, 0);
+	defContext->UpdateSubresource(texture, 0, nullptr, bits, rowPitch, 0);
 
 	// 셰이더 리소스 뷰 구조체를 설정합니다.
 	D3D11_SHADER_RESOURCE_VIEW_DESC srvDesc;
@@ -85,14 +87,18 @@ ID3D11ShaderResourceView * RMTexture::LoadTexture(wstring fileName)
 	ID3D11ShaderResourceView* texData = nullptr;
 	hResult = device->CreateShaderResourceView(texture, &srvDesc, &texData);
 	if (FAILED(hResult)) {
-		return NULL;
+		return nullptr;
 	}
 
 	// 이 텍스처에 대해 밉맵을 생성합니다.
-	dc->GenerateMips(texData);
+	defContext->GenerateMips(texData);
+
+	::SendMessageW(_hWnd, WM_UPDATE_COMMAND, NULL, (LPARAM)defContext);
 
 	texture->Release();
 	FreeImage_Unload(dib);
+
+	SAFE_RELEASE(defContext);
 
 	return texData;
 }
@@ -104,6 +110,7 @@ Texture * RMTexture::loadResource(wstring fileName, void * param)
 	tex->name = MYUTIL::getFileName(fileName.c_str());
 	tex->data = LoadTexture(fileName);
 
+	
 	if (!tex->data) {
 		SAFE_DELETE(tex);
 	}

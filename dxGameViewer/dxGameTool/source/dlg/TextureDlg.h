@@ -20,8 +20,11 @@ class TextureDlg : public CDialogEx
 /*************************************** 멤버 함수 *************************************/
 public:
 	TextureDlg(CWnd* pParent = NULL);  
+
 	virtual ~TextureDlg();
 
+
+	void SetDefferedContext(ID3D11DeviceContext* defContext) { _defContext = defContext; };
 protected:
 	//다이얼로그 가상함수
 	virtual BOOL OnInitDialog();
@@ -84,6 +87,6 @@ private:
 	CComboBox					_cmbAlphaMap;		//알파 텍스쳐 콤보박스 연결 변수
 	CComboBox					_cmbBumpMap;		//노말 텍스쳐 콤보박스 연결 변수
 
-	ID3D11DeviceContext*		_dc;
+	ComPtr<ID3D11DeviceContext>	_defContext;
 };
 

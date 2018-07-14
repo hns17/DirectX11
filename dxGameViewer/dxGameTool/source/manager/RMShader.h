@@ -42,12 +42,12 @@ public:
 	bool SetShaderParameters(ID3D11DeviceContext * dc, XMFLOAT4 color);
 
 protected:
-	Shader* loadResource(wstring fileName, void* param = NULL);
+	Shader* loadResource(wstring fileName, void* param=nullptr);
 	void releaseResource(Shader* data);
 private:
-	ID3D11Buffer*			_transBuffer	= NULL;
-	ID3D11Buffer*			_cameraBuffer	= NULL;
-	ID3D11Buffer*			_colorBuffer	= NULL;
-	ID3D11Buffer*			_boneBuffer		= NULL;
+	ID3D11Buffer*			_transBuffer	= nullptr;
+	ID3D11Buffer*			_cameraBuffer	= nullptr;
+	ID3D11Buffer*			_colorBuffer	= nullptr;
+	ID3D11Buffer*			_boneBuffer		= nullptr;
 	
 };

@@ -38,46 +38,58 @@ class DeviceManager : public SingletonBase <DeviceManager>
 public:
 	//dx11 device 생성
 	HRESULT						CreateDevice(int screenWidth, int screenHeight);
+
 	//렌더링 뷰 정보 초기화
-	PWindowRender				InitRenderScreen(HWND hWnd, int screenWidth, int screenHeight, float screenNear, float screenDepth);
+	PWindowRender				InitRenderScreen(HWND hWnd, ID3D11DeviceContext* dc, int screenWidth, int screenHeight, float screenNear, float screenDepth);
 	
+
+	//multi thread render 용 context 생성
+	HRESULT						SetDeferredContext(ID3D11DeviceContext** defContext);
+
+	//command 실행
+	void						ExcuteCommand(ID3D11DeviceContext * defContext);
+
 	//씬 정리
-	void						BeginScene(PWindowRender pWR, float, float, float, float);
+	void						BeginScene(PWindowRender pWR, ID3D11DeviceContext* dc, float, float, float, float);
 	void						EndScene(PWindowRender pWR);
+
 
 	//뷰 정보 변경
 	XMFLOAT3					ConvertScreenCoordinate(PWindowRender pWR, POINT ptWinPos, XMVECTOR cameraPos, bool isDepthBase = true);
 
-	//set fill mode
-	void						SetFillMode(D3D11_FILL_MODE mode);
+	//change fill mode
+	void						ChangeFillMode(D3D11_FILL_MODE mode);
 	
-	//set face cull
-	void						SetCullMode(D3D11_CULL_MODE mode);
+	//change face cull
+	void						ChangeCullMode(D3D11_CULL_MODE mode);
 	
-	//texture mode
-	bool						SetSamplerAddrees(D3D11_TEXTURE_ADDRESS_MODE addMode);
+	//change texture mode
+	bool						ChangeSamplerAddrees(D3D11_TEXTURE_ADDRESS_MODE addMode);
+
+	//Set Raster State
+	void						SetRasterState(ID3D11DeviceContext* dc);
+
+	//Set Sampler State
+	void						SetSamplerState(ID3D11DeviceContext* dc);
 
 	//Alpha blending On/Off
-	void						TurnOnAlphaBlending();
-	void						TurnOffAlphaBlending();
+	void						TurnOnAlphaBlending(ID3D11DeviceContext* dc);
+	void						TurnOffAlphaBlending(ID3D11DeviceContext* dc);
+
+	//Zbuffer On/Off
+	void						TurnZBufferOn(ID3D11DeviceContext* dc);
+	void						TurnZBufferOff(ID3D11DeviceContext* dc);
 
 	//Vsync On/Off
-	void						TurnVSync()				{ _vsyncEnabled = !_vsyncEnabled;												}
-	
-	//Zbuffer On/Off
-	void						TurnZBufferOn()			{ _deviceContext->OMSetDepthStencilState(_depthEnabledStencilState.Get(), 1);	}
-	void						TurnZBufferOff()		{ _deviceContext->OMSetDepthStencilState(_depthDisabledStencilState.Get(), 1);	}
+	void						TurnVSync()				{ _vsyncEnabled = !_vsyncEnabled;	}
 
 	//check vsync
-	bool						IsVSync()				{ return _vsyncEnabled;															}
-	
+	bool						IsVSync()				{ return _vsyncEnabled;				}
 	
 	//Get func
-	ID3D11DeviceContext*		GetDeviceContext()		{ return _deviceContext.Get();													}
-	ID3D11Device*				GetDevice()				{ return _device.Get();															}
+	ID3D11DeviceContext*		GetDeviceContext()		{ return _deviceContext.Get();		}
+	ID3D11Device*				GetDevice()				{ return _device.Get();				}
 
-	D3D11_FILL_MODE				GetFillMode()			{ return _rasterDesc.FillMode;													}
-	D3D11_CULL_MODE				GetCullMode()			{ return _rasterDesc.CullMode;													}
 
 	DeviceManager();
 	~DeviceManager() {}
@@ -85,11 +97,10 @@ public:
 
 private:
 	bool						InitDepthState();
-	bool						InitDepthBuffer(PWindowRender pWR, int screenWidth, int screenHeight);
+	bool						InitDepthBuffer(PWindowRender pWR, ID3D11DeviceContext* dc, int screenWidth, int screenHeight);
 	
 	bool						InitAlphaBlend();
 	bool						InitRasterize();
-	bool						setRasterState();
 	bool						InitSamplerState();
 
 
@@ -111,8 +122,10 @@ private:
 	ComPtr<ID3D11RasterizerState>		_rasterState;
 	D3D11_RASTERIZER_DESC				_rasterDesc;
 
+
 	ComPtr<ID3D11SamplerState>			_sampleState;
 	D3D11_SAMPLER_DESC					_sampleDesc;
+
 
 	int									_videoCardMemory;
 	char								_videoCardDescription[128];

@@ -25,6 +25,6 @@ public:
 
 protected:
 	//Override
-	Texture * loadResource(wstring fileName, void* param = NULL);
+	Texture * loadResource(wstring fileName, void* param=NULL);
 	void releaseResource(Texture* data);
 };
